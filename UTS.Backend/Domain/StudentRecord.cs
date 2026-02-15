@@ -3,19 +3,12 @@
     using System.ComponentModel;
     using System.Linq;
 
-    public sealed class StudentRecord : INotifyPropertyChanged
+    public sealed class StudentRecord(string id, string name, int testsCount) : INotifyPropertyChanged
     {
-        private readonly CellState[] _cells;
+        private readonly CellState[] _cells = new CellState[testsCount];
 
-        public StudentRecord(string id, string name, int testsCount)
-        {
-            Id = id ?? "";
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            _cells = new CellState[testsCount];
-        }
-
-        public string Id { get; set; }
-        public string Name { get; set; }
+        public string Id { get; set; } = id ?? "";
+        public string Name { get; set; } = name ?? throw new ArgumentNullException(nameof(name));
 
         // Indexer enables WPF binding: Path=[testIndex]
         public CellState this[int testIndex]
@@ -37,7 +30,6 @@
 
         public int TestsCount => _cells.Length;
 
-        // Authoritative evaluation count is Z-only.
         public int GradedCount => _cells.Count(c => c == CellState.Graded);
 
         public int LastGradedIndex()

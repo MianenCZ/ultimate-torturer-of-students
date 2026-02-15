@@ -32,7 +32,7 @@ namespace UTS.WPF.Convertors
             {
                 CellState.Absent => "A",
                 CellState.Recommended => "D",
-                CellState.Graded => "Z",
+                CellState.Graded => "H",
                 _ => ""
             };
         }

@@ -1,16 +1,16 @@
-﻿namespace UTS.WPF.MVVM
-{
-    using Microsoft.Win32;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Globalization;
-    using System.Windows;
-    using System.Windows.Input;
-    using UTS.Backend.Domain;
-    using UTS.Backend.Persistence;
-    using UTS.Backend.Selection;
-    using UTS.WPF.Localization;
+﻿using Microsoft.Win32;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Input;
+using UTS.Backend.Domain;
+using UTS.Backend.Persistence;
+using UTS.Backend.Selection;
+using UTS.WPF.Localization;
 
+namespace UTS.WPF.MVVM
+{
     public sealed class MainViewModel : INotifyPropertyChanged
     {
         private UtsDocument? _document;
@@ -110,9 +110,8 @@
             if (dlg.ShowDialog() == true)
             {
                 Document = UtsDocument.NewEmpty(dlg.ClassName, dlg.T, dlg.K, dlg.E, dlg.Students);
+                SaveAs();
             }
-
-            SaveAs();
         }
 
         private void OpenInteractive() 
