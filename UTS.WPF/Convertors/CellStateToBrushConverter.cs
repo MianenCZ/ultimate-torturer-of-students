@@ -15,6 +15,7 @@ namespace UTS.WPF.Convertors
                 CellState.Absent => Brushes.MistyRose,       // red-ish
                 CellState.Recommended => Brushes.LightBlue,  // blue-ish
                 CellState.Graded => Brushes.LightGreen,      // green-ish
+                CellState.Locked => Brushes.LightGray,       // gray-ish
                 _ => Brushes.White
             };
         }

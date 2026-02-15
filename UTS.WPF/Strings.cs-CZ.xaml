@@ -2,19 +2,24 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=System.Runtime">
     <sys:String x:Key="AppTitle">Učitelův trapitel studenta</sys:String>
-    <sys:String x:Key="Panel_Title_Diagnostics">Diagnostika</sys:String>
-    <sys:String x:Key="Panel_Title_Warnings">Varování</sys:String>
-    <sys:String x:Key="Panel_Title_BelowE">Studenti pod minimem</sys:String>
+
+    <!-- Columns -->
     <sys:String x:Key="Col_Student">Student</sys:String>
     <sys:String x:Key="Col_Graded">Hodnoceno</sys:String>
     <sys:String x:Key="Col_Missing">Chybí</sys:String>
+    <sys:String x:Key="Col_Note">Poznámka</sys:String>
     <sys:String x:Key="Hdr_Test">Test</sys:String>
-    <sys:String x:Key="A11y_Warnings">Seznam varování</sys:String>
+    
+    <!-- Menu -->
     <sys:String x:Key="MenuItem_File">Soubor</sys:String>
     <sys:String x:Key="MenuItem_File_Open">Otevřít</sys:String>
     <sys:String x:Key="MenuItem_File_New">Nová třída</sys:String>
     <sys:String x:Key="MenuItem_File_Save">Uložit</sys:String>
     <sys:String x:Key="MenuItem_File_SaveAs">Uložit jako</sys:String>
+    <sys:String x:Key="MenuItem_Settings">Nastavení</sys:String>
+    <sys:String x:Key="MenuItem_Settings_Language">Jazyk</sys:String>
+    
+    <!-- New class Dialog -->
     <sys:String x:Key="CreateClassDialog_Header">Nová třída</sys:String>
     <sys:String x:Key="CreateClassDialog_Students_Header">Žáci (jeden na řádek):</sys:String>
     <sys:String x:Key="CreateClassDialog_Class_Settings">Třída:</sys:String>

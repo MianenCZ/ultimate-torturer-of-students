@@ -64,6 +64,19 @@ namespace UTS.WPF
                 headerButton.Command = vm.GenerateColumnCommand;
                 headerButton.CommandParameter = testIndex;
 
+                var lockButton = new Button
+                {
+                    Content = "L",
+                    Padding = new Thickness(6, 2, 6, 2)
+                };
+                lockButton.Command = vm.ToggleColumnLockCommand;
+                lockButton.CommandParameter = testIndex;
+
+                var buttonPanel = new DockPanel
+                {
+                    Children = { headerButton, lockButton }
+                };
+
                 // Build a DataTemplate: Border(Background=converter([t])) -> TextBlock(Text=converter([t]))
                 var border = new FrameworkElementFactory(typeof(Border));
                 border.SetValue(Border.PaddingProperty, new Thickness(0));
@@ -82,7 +95,7 @@ namespace UTS.WPF
 
                 var col = new DataGridTemplateColumn
                 {
-                    Header = headerButton,
+                    Header = buttonPanel,
                     CellTemplate = template,
                     Width = new DataGridLength(1, DataGridLengthUnitType.Star),
                     MinWidth = 42
@@ -91,6 +104,24 @@ namespace UTS.WPF
                 _colToTestIndex[col] = testIndex;
                 Grid.Columns.Add(col);
             }
+
+            Grid.Columns.Add(new DataGridTextColumn
+            {
+                Header = TryFindResource("Col_Graded") ?? "Graded",
+                Binding = new Binding(nameof(StudentRecord.GradedCount))
+            });
+
+            Grid.Columns.Add(new DataGridTextColumn
+            {
+                Header = TryFindResource("Col_Missing") ?? "Remains",
+                Binding = new Binding(nameof(StudentRecord.GradedRemains))
+            });
+
+            Grid.Columns.Add(new DataGridTextColumn
+            {
+                Header = TryFindResource("Col_Note") ?? "Note",
+                Binding = new Binding(nameof(StudentRecord.Note))
+            });
         }
 
 

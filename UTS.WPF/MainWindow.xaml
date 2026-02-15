@@ -23,16 +23,50 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
         <Menu>
             <MenuItem Header="{DynamicResource MenuItem_File}">
-                <MenuItem Header="{DynamicResource MenuItem_File_Open}" Command="{Binding OpenCommand}"/>
-                <MenuItem Header="{DynamicResource MenuItem_File_New}" Command="{Binding NewCommand}"/>
-                <MenuItem Header="{DynamicResource MenuItem_File_Save}" Command="{Binding SaveCommand}"/>
-                <MenuItem Header="{DynamicResource MenuItem_File_SaveAs}" Command="{Binding SaveAsCommand}"/>
+                <MenuItem Header="{DynamicResource MenuItem_File_Open}" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="{DynamicResource MenuItem_File_New}" Command="{Binding NewCommand}" InputGestureText="Ctrl+N"/>
+                <MenuItem Header="{DynamicResource MenuItem_File_Save}" Command="{Binding SaveCommand}" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="{DynamicResource MenuItem_File_SaveAs}" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Alt+S"/>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource MenuItem_Settings}">
+                <MenuItem Header="{DynamicResource MenuItem_Settings_Language}">
+                    <MenuItem Header="English"
+                              IsCheckable="True"
+                              Command="{Binding SwitchLanguageCommand}"
+                              CommandParameter="en-US">
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="IsChecked" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentLocale}" Value="en-US">
+                                        <Setter Property="IsChecked" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
+
+                    <MenuItem Header="Čeština"
+                              IsCheckable="True"
+                              Command="{Binding SwitchLanguageCommand}"
+                              CommandParameter="cs-CZ">
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="IsChecked" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentLocale}" Value="cs-CZ">
+                                        <Setter Property="IsChecked" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
+                </MenuItem>
             </MenuItem>
         </Menu>
         
@@ -48,7 +82,7 @@
               VirtualizingPanel.VirtualizationMode="Recycling"
               PreviewMouseLeftButtonDown="Grid_PreviewMouseLeftButtonDown"
               PreviewMouseRightButtonDown="Grid_PreviewMouseRightButtonDown"
-              Margin="0,20,0,0">
+              Margin="20">
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
                     <Setter Property="Padding" Value="0"/>
@@ -65,36 +99,5 @@
                 </Style>
             </DataGrid.Resources>
         </DataGrid>
-
-        <DockPanel Grid.Column="1" Margin="12">
-            <TextBlock Text="{DynamicResource Panel_Title_Diagnostics}"
-                 FontWeight="SemiBold" FontSize="16"
-                 DockPanel.Dock="Top"/>
-
-            <TextBlock Text="{DynamicResource Panel_Title_Warnings}"
-                 Margin="0,12,0,4"
-                 FontWeight="SemiBold"
-                 DockPanel.Dock="Top"/>
-            <ListBox ItemsSource="{Binding Warnings}"
-               MinHeight="140"
-               AutomationProperties.Name="{DynamicResource A11y_Warnings}"/>
-
-            <TextBlock Text="{DynamicResource Panel_Title_BelowE}"
-                 Margin="0,12,0,4"
-                 FontWeight="SemiBold"
-                 DockPanel.Dock="Top"/>
-            <DataGrid ItemsSource="{Binding BelowE}"
-                AutoGenerateColumns="False"
-                IsReadOnly="True"
-                HeadersVisibility="Column"
-                MinHeight="200">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="{DynamicResource Col_Student}" Binding="{Binding StudentName}"/>
-                    <DataGridTextColumn Header="{DynamicResource Col_Graded}" Binding="{Binding GradedCount}"/>
-                    <DataGridTextColumn Header="{DynamicResource Col_Missing}" Binding="{Binding MissingToE}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </DockPanel>
-        
     </Grid>
 </Window>

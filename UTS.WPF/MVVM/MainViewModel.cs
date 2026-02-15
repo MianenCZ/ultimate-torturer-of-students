@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using UTS.Backend.Domain;
@@ -15,6 +17,10 @@ namespace UTS.WPF.MVVM
     {
         private UtsDocument? _document;
         private string? _currentPath;
+
+        // Persistence
+        private readonly string _settingsFilePath;
+        private AppSettings _settings = new();
 
         public UtsDocument? Document
         {
@@ -30,6 +36,8 @@ namespace UTS.WPF.MVVM
             }
         }
 
+        public string CurrentLocale => _settings.CultureName ?? "cs-CZ";
+
         public bool HasDocument => Document != null;
 
         public string? CurrentPath
@@ -40,8 +48,10 @@ namespace UTS.WPF.MVVM
 
         public ObservableCollection<string> Warnings { get; } = new();
         public ObservableCollection<BelowEItem> BelowE { get; } = new();
+        public AboutModel About { get; } = new();
 
         public ICommand GenerateColumnCommand { get; }
+        public ICommand ToggleColumnLockCommand { get; }
         public ICommand SwitchLanguageCommand { get; }
         public ICommand SaveCommand { get; }
         public ICommand SaveAsCommand { get; }
@@ -51,9 +61,25 @@ namespace UTS.WPF.MVVM
         public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler? DocumentChanged;
 
+        // New settings POCO
+        private class AppSettings
+        {
+            public string? CultureName { get; set; }
+            public string? LastPath { get; set; }
+        }
+
         public MainViewModel()
         {
+            // compute settings file location: %AppData%/UTS/settings.json
+            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var dir = Path.Combine(appData, "UTS");
+            Directory.CreateDirectory(dir);
+            _settingsFilePath = Path.Combine(dir, "settings.json");
+
             GenerateColumnCommand = new RelayCommand(p => GenerateColumn(Convert.ToInt32(p, CultureInfo.InvariantCulture)),
+                                                    p => HasDocument);
+
+            ToggleColumnLockCommand = new RelayCommand(p => ToggleColumnLock(Convert.ToInt32(p, CultureInfo.InvariantCulture)),
                                                     p => HasDocument);
 
             SwitchLanguageCommand = new RelayCommand(p => SwitchLanguage((string)p!));
@@ -62,6 +88,28 @@ namespace UTS.WPF.MVVM
             SaveAsCommand = new RelayCommand(_ => SaveAs(), _ => HasDocument);
             OpenCommand = new RelayCommand(_ => OpenInteractive());
             NewCommand = new RelayCommand(_ => NewClass());
+
+            // Load settings from disk, apply culture and try to open last path
+            LoadSettingsFromDisk();
+
+            SwitchLanguage(!string.IsNullOrWhiteSpace(_settings.CultureName)
+                ? _settings.CultureName
+                : "cs-CZ");
+
+            if (!string.IsNullOrWhiteSpace(_settings.LastPath) && File.Exists(_settings.LastPath))
+            {
+                try
+                {
+                    OpenPath(_settings.LastPath);
+                }
+                catch
+                {
+                    // ignore load errors on startup; user can open manually
+                }
+            }
+
+            // Ensure any other initialization that depended on previous SwitchLanguage call
+            DocumentChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void GenerateColumn(int testIndex)
@@ -75,6 +123,23 @@ namespace UTS.WPF.MVVM
         {
             Document = UtsCsv.Load(path);
             CurrentPath = path;
+
+            // persist last opened path
+            _settings.LastPath = path;
+            SaveSettingsToDisk();
+        }
+
+        private void SwitchLanguage(string cultureName)
+        {
+            LocalizationService.ApplyCulture(cultureName);
+            // DynamicResource updates for most bound strings; for generated columns, rebuild columns in the view.
+            DocumentChanged?.Invoke(this, EventArgs.Empty);
+
+            // persist selection
+            _settings.CultureName = cultureName;
+            SaveSettingsToDisk();
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentLocale)));
         }
 
         private void Save()
@@ -82,6 +147,21 @@ namespace UTS.WPF.MVVM
             if (Document == null || string.IsNullOrWhiteSpace(CurrentPath)) return;
             UtsCsv.Save(Document, CurrentPath);
             RecomputeDiagnostics();
+        }
+
+        private void ToggleColumnLock(int testIndex)
+        {
+            if (Document == null) return;
+            foreach (var student in Document.Students)
+            {
+                student[testIndex] = student[testIndex] switch
+                {
+                    CellState.None => CellState.Locked,
+                    CellState.Recommended => CellState.Locked,
+                    CellState.Locked => CellState.None,
+                    _ => student[testIndex]
+                };
+            }
         }
 
         private void SaveAs() 
@@ -100,6 +180,10 @@ namespace UTS.WPF.MVVM
                 UtsCsv.Save(Document!, saveFile.FileName);
                 CurrentPath = saveFile.FileName;
                 RecomputeDiagnostics();
+
+                // persist last opened path
+                _settings.LastPath = CurrentPath;
+                SaveSettingsToDisk();
             }
         }
 
@@ -125,13 +209,6 @@ namespace UTS.WPF.MVVM
             {
                 OpenPath(openFile.FileName);
             }
-        }
-
-        private void SwitchLanguage(string cultureName)
-        {
-            LocalizationService.ApplyCulture(cultureName);
-            // DynamicResource updates for most bound strings; for generated columns, rebuild columns in the view.
-            DocumentChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void HandleLeftClick(StudentRecord s, int testIndex)
@@ -178,6 +255,40 @@ namespace UTS.WPF.MVVM
 
         private void OnPropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        // Settings IO helpers
+        private void LoadSettingsFromDisk()
+        {
+            try
+            {
+                if (File.Exists(_settingsFilePath))
+                {
+                    var json = File.ReadAllText(_settingsFilePath);
+                    var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var s = JsonSerializer.Deserialize<AppSettings>(json, opts);
+                    if (s != null) _settings = s;
+                }
+            }
+            catch
+            {
+                // ignore errors (corrupt file, permission issues) and continue with defaults
+                _settings = new AppSettings();
+            }
+        }
+
+        private void SaveSettingsToDisk()
+        {
+            try
+            {
+                var opts = new JsonSerializerOptions { WriteIndented = true };
+                var json = JsonSerializer.Serialize(_settings, opts);
+                File.WriteAllText(_settingsFilePath, json);
+            }
+            catch
+            {
+                // ignore IO errors - settings are best-effort
+            }
+        }
     }
 
 }

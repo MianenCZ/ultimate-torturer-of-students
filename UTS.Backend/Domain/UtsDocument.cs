@@ -48,7 +48,7 @@ namespace UTS.Backend.Domain
 
             for (int i = 0; i < students.Length; i++)
             {
-                document.Students.Add(new StudentRecord(students[i], students[i], t));
+                document.Students.Add(new StudentRecord(students[i], students[i], t, k, e));
             }
 
             return document;

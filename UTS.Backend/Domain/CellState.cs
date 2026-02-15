@@ -9,7 +9,8 @@ namespace UTS.Backend.Domain
         None,       // '-'
         Absent,     // 'A'
         Recommended,// 'D'
-        Graded      // 'Z'
+        Graded,     // 'Z'
+        Locked,     // 'L'
     }
 
 }

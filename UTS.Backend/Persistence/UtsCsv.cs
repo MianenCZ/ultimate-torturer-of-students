@@ -54,7 +54,7 @@ namespace UTS.Backend.Persistence
                 var row = Parse(lines[i]);
                 if (row.Count != expected) throw new FormatException($"Row {i + 1} width mismatch.");
 
-                var s = new StudentRecord(row[0], row[1], doc.T);
+                var s = new StudentRecord(row[0], row[1], doc.T, doc.K, doc.E);
                 for (int t = 0; t < doc.T; t++)
                 {
                     if (row[2 + t].Length != 1) throw new FormatException("Invalid cell token.");

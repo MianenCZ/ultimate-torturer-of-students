@@ -7,6 +7,7 @@
             CellState.Absent => 'A',
             CellState.Recommended => 'D',
             CellState.Graded => 'Z',
+            CellState.Locked => 'L',
             _ => '-',
         };
 
@@ -16,6 +17,7 @@
             'D' => CellState.Recommended,
             'Z' => CellState.Graded,
             '-' => CellState.None,
+            'L' => CellState.Locked,
             _ => throw new FormatException($"Invalid cell '{c}'. Expected A,D,Z,-"),
         };
     }
