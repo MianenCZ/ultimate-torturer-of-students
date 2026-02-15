@@ -8,4 +8,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\UTS.Backend\UTS.Backend.csproj" />
+  </ItemGroup>
+
 </Project>

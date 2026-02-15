@@ -1,3 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="UTS.Backend/UTS.Backend.csproj" />
   <Project Path="UTS.WPF/UTS.WPF.csproj" />
 </Solution>

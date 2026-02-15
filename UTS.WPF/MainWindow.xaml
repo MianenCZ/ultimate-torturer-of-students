@@ -1,12 +1,79 @@
 ﻿<Window x:Class="UTS.WPF.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UTS.WPF"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        xmlns:convertors="clr-namespace:UTS.WPF.Convertors"
+        Title="{DynamicResource AppTitle}"
+        Width="1100" Height="700">
 
+    <Window.Resources>
+        <convertors:CellStateToBrushConverter x:Key="CellStateToBrush"/>
+        <convertors:CellStateToGlyphConverter x:Key="CellStateToGlyph"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <DataGrid x:Name="Grid"
+              Grid.Column="0"
+              ItemsSource="{Binding Document.Students}"
+              AutoGenerateColumns="False"
+              IsReadOnly="True"
+              SelectionUnit="Cell"
+              EnableRowVirtualization="True"
+              EnableColumnVirtualization="True"
+              VirtualizingPanel.IsVirtualizing="True"
+              VirtualizingPanel.VirtualizationMode="Recycling"
+              PreviewMouseLeftButtonDown="Grid_PreviewMouseLeftButtonDown"
+              PreviewMouseRightButtonDown="Grid_PreviewMouseRightButtonDown">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="BorderThickness" Value="0.5"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                    <!-- Preserve state colors by not forcing selection background -->
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+        </DataGrid>
+
+        <DockPanel Grid.Column="1" Margin="12">
+            <TextBlock Text="{DynamicResource Panel_Title_Diagnostics}"
+                 FontWeight="SemiBold" FontSize="16"
+                 DockPanel.Dock="Top"/>
+
+            <TextBlock Text="{DynamicResource Panel_Title_Warnings}"
+                 Margin="0,12,0,4"
+                 FontWeight="SemiBold"
+                 DockPanel.Dock="Top"/>
+            <ListBox ItemsSource="{Binding Warnings}"
+               MinHeight="140"
+               AutomationProperties.Name="{DynamicResource A11y_Warnings}"/>
+
+            <TextBlock Text="{DynamicResource Panel_Title_BelowE}"
+                 Margin="0,12,0,4"
+                 FontWeight="SemiBold"
+                 DockPanel.Dock="Top"/>
+            <DataGrid ItemsSource="{Binding BelowE}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True"
+                HeadersVisibility="Column"
+                MinHeight="200">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{DynamicResource Col_Student}" Binding="{Binding StudentName}"/>
+                    <DataGridTextColumn Header="{DynamicResource Col_Graded}" Binding="{Binding GradedCount}"/>
+                    <DataGridTextColumn Header="{DynamicResource Col_Missing}" Binding="{Binding MissingToE}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
     </Grid>
 </Window>

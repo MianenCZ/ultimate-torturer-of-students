@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "UTS.WPF": {
+      "commandName": "Project",
+      "commandLineArgs": "dummy.uts"
+    }
+  }
+}
