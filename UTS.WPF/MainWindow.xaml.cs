@@ -18,15 +18,10 @@ namespace UTS.WPF
             DataContextChanged += (_, __) => AttachAndBuild();
             Loaded += (_, __) => AttachAndBuild();
 
-            if(DataContext is not MainViewModel vm)
+            if (DataContext is not MainViewModel vm)
             {
                 DataContext = vm = new MainViewModel();
             }
-
-            MenuItem_File_Open.Command = vm.OpenCommand;
-            MenuItem_File_Save.Command = vm.SaveCommand;
-            MenuItem_File_SaveAs.Command = vm.SaveAsCommand;
-            MenuItem_File_New.Command = vm.NewCommand;
         }
 
         private void AttachAndBuild()

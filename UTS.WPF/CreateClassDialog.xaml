@@ -58,6 +58,10 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="8"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
@@ -71,8 +75,18 @@
                              x:Name="TestsTextBox"
                              PreviewTextInput="TestsTextBox_PreviewTextInput"/>
 
+                    <TextBlock Grid.Row="4" Text="{DynamicResource CreateClassDialog_Class_Graded_Minimum_Count}" Margin="0,0,0,4"/>
+                    <TextBox Grid.Row="4" Margin="0,22,0,0"
+                         x:Name="GradedMinimumTextBox"
+                         PreviewTextInput="TestsTextBox_PreviewTextInput"/>
+
+                    <TextBlock Grid.Row="6" Text="{DynamicResource CreateClassDialog_Class_Graded_Per_Test_Count}" Margin="0,0,0,4"/>
+                    <TextBox Grid.Row="6" Margin="0,22,0,0"
+                         x:Name="GradedPerTestCountTextBox"
+                         PreviewTextInput="TestsTextBox_PreviewTextInput"/>
+
                     <!-- Validation message -->
-                    <TextBlock Grid.Row="4"
+                    <TextBlock Grid.Row="8"
                                x:Name="ValidationText"
                                Foreground="Red"
                                TextWrapping="Wrap"/>

@@ -42,8 +42,8 @@ namespace UTS.Backend.Domain
             {
                 ClassName = className,
                 T = t,
-                E = k,
-                K = e,
+                E = e,
+                K = k,
             };
 
             for (int i = 0; i < students.Length; i++)

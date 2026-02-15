@@ -84,7 +84,24 @@
             RecomputeDiagnostics();
         }
 
-        private void SaveAs() { /* FE: file dialog, then UtsCsv.Save */ }
+        private void SaveAs() 
+        { 
+            if(Document == null) return;
+
+            var saveFile = new SaveFileDialog()
+            {
+                DefaultExt = ".uts",
+                DefaultDirectory = Environment.CurrentDirectory,
+                FileName = CurrentPath ?? "untitled.uts"
+            };
+
+            if(saveFile.ShowDialog() == true)
+            {
+                UtsCsv.Save(Document!, saveFile.FileName);
+                CurrentPath = saveFile.FileName;
+                RecomputeDiagnostics();
+            }
+        }
 
         private void NewClass()
         {
@@ -92,11 +109,10 @@
 
             if (dlg.ShowDialog() == true)
             {
-                string className = dlg.ClassName;
-                int t = dlg.T;
-
-                Document = UtsDocument.NewEmpty(dlg.ClassName, dlg.T, 10, 10, dlg.Students);
+                Document = UtsDocument.NewEmpty(dlg.ClassName, dlg.T, dlg.K, dlg.E, dlg.Students);
             }
+
+            SaveAs();
         }
 
         private void OpenInteractive() 

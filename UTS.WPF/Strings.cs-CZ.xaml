@@ -20,5 +20,7 @@
     <sys:String x:Key="CreateClassDialog_Class_Settings">Třída:</sys:String>
     <sys:String x:Key="CreateClassDialog_Class_Name">Název:</sys:String>
     <sys:String x:Key="CreateClassDialog_Class_Test_Count">Počet testů:</sys:String>
+    <sys:String x:Key="CreateClassDialog_Class_Graded_Minimum_Count">Musí být hodnoceno:</sys:String>
+    <sys:String x:Key="CreateClassDialog_Class_Graded_Per_Test_Count">Vyber testů:</sys:String>
     
 </ResourceDictionary>

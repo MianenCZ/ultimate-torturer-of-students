@@ -1,6 +1,7 @@
 ﻿namespace UTS.Backend.Domain
 {
     using System.ComponentModel;
+    using System.Linq;
 
     public sealed class StudentRecord : INotifyPropertyChanged
     {
@@ -19,9 +20,14 @@
         // Indexer enables WPF binding: Path=[testIndex]
         public CellState this[int testIndex]
         {
-            get => _cells[testIndex];
+            get
+            {
+                if (testIndex < 0 || testIndex >= _cells.Length) return CellState.None;
+                return _cells[testIndex];
+            }
             set
             {
+                if (testIndex < 0 || testIndex >= _cells.Length) return;
                 if (_cells[testIndex] == value) return;
                 _cells[testIndex] = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item[]"));

@@ -20,4 +20,6 @@
     <sys:String x:Key="CreateClassDialog_Class_Settings">Class:</sys:String>
     <sys:String x:Key="CreateClassDialog_Class_Name">Name:</sys:String>
     <sys:String x:Key="CreateClassDialog_Class_Test_Count">Test count:</sys:String>
+    <sys:String x:Key="CreateClassDialog_Class_Graded_Minimum_Count">Must be graded total:</sys:String>
+    <sys:String x:Key="CreateClassDialog_Class_Graded_Per_Test_Count">Pick tests:</sys:String>
 </ResourceDictionary>
