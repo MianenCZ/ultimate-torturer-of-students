@@ -1,8 +1,10 @@
 ﻿namespace UTS.WPF.MVVM
 {
+    using Microsoft.Win32;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Globalization;
+    using System.Windows;
     using System.Windows.Input;
     using UTS.Backend.Domain;
     using UTS.Backend.Persistence;
@@ -44,6 +46,7 @@
         public ICommand SaveCommand { get; }
         public ICommand SaveAsCommand { get; }
         public ICommand OpenCommand { get; }
+        public ICommand NewCommand { get; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler? DocumentChanged;
@@ -58,6 +61,7 @@
             SaveCommand = new RelayCommand(_ => Save(), _ => HasDocument && !string.IsNullOrWhiteSpace(CurrentPath));
             SaveAsCommand = new RelayCommand(_ => SaveAs(), _ => HasDocument);
             OpenCommand = new RelayCommand(_ => OpenInteractive());
+            NewCommand = new RelayCommand(_ => NewClass());
         }
 
         public void GenerateColumn(int testIndex)
@@ -81,7 +85,32 @@
         }
 
         private void SaveAs() { /* FE: file dialog, then UtsCsv.Save */ }
-        private void OpenInteractive() { /* FE: file dialog, then OpenPath */ }
+
+        private void NewClass()
+        {
+            var dlg = new CreateClassDialog(defaultClassName: "1A", defaultT: 6);
+
+            if (dlg.ShowDialog() == true)
+            {
+                string className = dlg.ClassName;
+                int t = dlg.T;
+
+                Document = UtsDocument.NewEmpty(dlg.ClassName, dlg.T, 10, 10, dlg.Students);
+            }
+        }
+
+        private void OpenInteractive() 
+        {
+            OpenFileDialog openFile = new OpenFileDialog()
+            {
+                DefaultExt = ".uts",
+                DefaultDirectory = Environment.CurrentDirectory,
+            };
+            if (openFile.ShowDialog() == true)
+            {
+                OpenPath(openFile.FileName);
+            }
+        }
 
         private void SwitchLanguage(string cultureName)
         {
@@ -92,7 +121,13 @@
 
         public void HandleLeftClick(StudentRecord s, int testIndex)
         {
-            s[testIndex] = (s[testIndex] == CellState.Absent) ? CellState.None : CellState.Absent;
+            s[testIndex] = s[testIndex] switch
+            {
+                CellState.None => CellState.Graded,
+                CellState.Recommended => CellState.Graded,
+                CellState.Graded => CellState.None,
+                _ => s[testIndex]
+            };
             RecomputeDiagnostics();
         }
 
@@ -100,11 +135,10 @@
         {
             s[testIndex] = s[testIndex] switch
             {
-                CellState.None => CellState.Recommended,
-                CellState.Recommended => CellState.Graded,
-                CellState.Graded => CellState.None,
-                CellState.Absent => CellState.Absent, // right-click does not change absence
-                _ => CellState.None
+                CellState.None => CellState.Absent,
+                CellState.Absent => CellState.None,
+                CellState.Recommended => CellState.Absent,
+                _ => s[testIndex]
             };
             RecomputeDiagnostics();
         }

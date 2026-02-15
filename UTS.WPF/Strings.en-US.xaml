@@ -10,4 +10,14 @@
     <sys:String x:Key="Col_Missing">Absent</sys:String>
     <sys:String x:Key="Hdr_Test">Test</sys:String>
     <sys:String x:Key="A11y_Warnings">Warnings</sys:String>
+    <sys:String x:Key="MenuItem_File">File</sys:String>
+    <sys:String x:Key="MenuItem_File_Open">Open</sys:String>
+    <sys:String x:Key="MenuItem_File_New">New class</sys:String>
+    <sys:String x:Key="MenuItem_File_Save">Save</sys:String>
+    <sys:String x:Key="MenuItem_File_SaveAS">Save as</sys:String>
+    <sys:String x:Key="CreateClassDialog_Header">New class</sys:String>
+    <sys:String x:Key="CreateClassDialog_Students_Header">Students (one per line):</sys:String>
+    <sys:String x:Key="CreateClassDialog_Class_Settings">Class:</sys:String>
+    <sys:String x:Key="CreateClassDialog_Class_Name">Name:</sys:String>
+    <sys:String x:Key="CreateClassDialog_Class_Test_Count">Test count:</sys:String>
 </ResourceDictionary>

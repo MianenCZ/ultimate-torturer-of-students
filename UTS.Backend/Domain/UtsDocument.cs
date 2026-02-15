@@ -35,6 +35,24 @@ namespace UTS.Backend.Domain
                 if (s.TestsCount != T)
                     throw new InvalidOperationException("Student row length != T.");
         }
+
+        public static UtsDocument NewEmpty(string className, int t, int k, int e, string[] students)
+        {
+            var document = new UtsDocument()
+            {
+                ClassName = className,
+                T = t,
+                E = k,
+                K = e,
+            };
+
+            for (int i = 0; i < students.Length; i++)
+            {
+                document.Students.Add(new StudentRecord(students[i], students[i], t));
+            }
+
+            return document;
+        }
     }
 
 }

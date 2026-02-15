@@ -17,6 +17,15 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
+        <Menu>
+            <MenuItem Header="{DynamicResource MenuItem_File}">
+                <MenuItem Header="{DynamicResource MenuItem_File_Open}" x:Name="MenuItem_File_Open"/>
+                <MenuItem Header="{DynamicResource MenuItem_File_New}" x:Name="MenuItem_File_New"/>
+                <MenuItem Header="{DynamicResource MenuItem_File_Save}" x:Name="MenuItem_File_Save"/>
+                <MenuItem Header="{DynamicResource MenuItem_File_SaveAs}" x:Name="MenuItem_File_SaveAs"/>
+            </MenuItem>
+        </Menu>
+        
         <DataGrid x:Name="Grid"
               Grid.Column="0"
               ItemsSource="{Binding Document.Students}"
@@ -28,7 +37,8 @@
               VirtualizingPanel.IsVirtualizing="True"
               VirtualizingPanel.VirtualizationMode="Recycling"
               PreviewMouseLeftButtonDown="Grid_PreviewMouseLeftButtonDown"
-              PreviewMouseRightButtonDown="Grid_PreviewMouseRightButtonDown">
+              PreviewMouseRightButtonDown="Grid_PreviewMouseRightButtonDown"
+              Margin="0,20,0,0">
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
                     <Setter Property="Padding" Value="0"/>
@@ -75,5 +85,6 @@
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
+        
     </Grid>
 </Window>

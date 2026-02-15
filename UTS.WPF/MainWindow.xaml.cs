@@ -17,6 +17,16 @@ namespace UTS.WPF
             InitializeComponent();
             DataContextChanged += (_, __) => AttachAndBuild();
             Loaded += (_, __) => AttachAndBuild();
+
+            if(DataContext is not MainViewModel vm)
+            {
+                DataContext = vm = new MainViewModel();
+            }
+
+            MenuItem_File_Open.Command = vm.OpenCommand;
+            MenuItem_File_Save.Command = vm.SaveCommand;
+            MenuItem_File_SaveAs.Command = vm.SaveAsCommand;
+            MenuItem_File_New.Command = vm.NewCommand;
         }
 
         private void AttachAndBuild()
@@ -53,7 +63,7 @@ namespace UTS.WPF
 
                 var headerButton = new Button
                 {
-                    Content = $"{TryFindResource("Hdr_Test") ?? "Test"} {t + 1}",
+                    Content = $"{t + 1}",
                     Padding = new Thickness(6, 2, 6, 2)
                 };
                 headerButton.Command = vm.GenerateColumnCommand;
